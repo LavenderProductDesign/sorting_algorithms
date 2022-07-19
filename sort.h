@@ -61,7 +61,9 @@ typedef struct deck_node_s
 	struct deck_node_s *next;
 } deck_node_t;
 
-
+/* Comparison direction macros for bitonic sort */
+#define up 0
+#define down 1
 
 void sortedInsert(listint_t **head_ref, listint_t *newNode);
 void print_array(const int *array, size_t size);
