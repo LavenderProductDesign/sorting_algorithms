@@ -1,64 +1,48 @@
 #include "sort.h"
 
 /**
- * sortedInsert - Prints an array of integers using the insertion sort.
+ * insertion_sort_list - sorts a doubly linked list of integers
+ * in ascending order using the Insertion sort algorithm
+ * prints the list after each time you swap two elements
  *
- * @head_ref: First node of the list
- * @newNode: Node the head points to
- */
-void sortedInsert(listint_t **head_ref, listint_t *newNode)
-{
-
-	listint_t *current;
-	/*if list is empty*/
-
-	if (*head_ref == NULL)
-		*head_ref = newNode;
-	else if ((*head_ref)->n >= newNode->n)
-	{
-		newNode->next = *head_ref;
-		newNode->next->prev = newNode;
-		*head_ref = newNode;
-	}
-	else
-	{
-		current = *head_ref;
-		while (current->next && current->next->n < newNode->n)
-			current = current->next;
-		newNode->next = current->next;
-		if (current->next != NULL)
-			newNode->next->prev = newNode;
-		current->next = newNode;
-		newNode->prev = current;
-	}
-}
-
-/**
- * insertion_sort_list - function to sort an array
- * @list: linked list
+ * @list: pointer to the linked list to sort
  */
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *nxt, *sorted, *current;
+	listint_t *current, *next, *prev;
 
-	if (list)
+	/* An list does not need to be sorted if its size is less than 2 */
+	if (list == NULL || *list == NULL || (*list)->next == NULL)
+		return;
 
+	current = (*list)->next;
+	while (current)
 	{
-		sorted = NULL;
-		current = *list;
+		next = current->next;
 
-		while (current)
+		/* if 2 adjacent nodes are out of order */
+		while (current->prev && (current->n < current->prev->n))
 		{
-			/*storing next for next iteration*/
-			nxt = current->next;
-			/*remove all links to create 'current'*/
-			current->prev = current->next = NULL;
-			sortedInsert(&sorted, current);
-			current = nxt;
+			/* swap current and current->prev */
+			prev = current->prev;
+
+			current->prev = prev->prev;
+			if (current->prev)
+				current->prev->next = current;
+			else
+				*list = current;  /* update the head of the list */
+
+			prev->next = current->next;
+			if (prev->next)
+				prev->next->prev = prev;
+
+			current->next = prev;
+			prev->prev = current;
+
+			/* print list */
 			print_list(*list);
 		}
-		*list = sorted;
-		printf("\n\n\n%i\n\n", sorted->n);
-		print_list(*list);
+
+		current = next;
 	}
 }
